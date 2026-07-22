@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rastreo GPS OBD2</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        /* FONDO BASE CON LA IMAGEN */
+        body {
+            min-height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            background: #0f172a url('FOTO-OBD.jpg') no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding-left: 30px;
+            position: relative;
+        }
+
+        /* CONTENEDOR FLOTANTE PRINCIPAL */
+        .left-container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            background: rgba(10, 15, 25, 0.70);
+            padding: 24px;
+            border-radius: 12px;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
+            min-width: 280px;
+        }
+
+        /* ESTILO GENERAL DE LOS BOTONES DEL PANEL */
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 6px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        /* BOTÓN PRINCIPAL: INGRESO A PLATAFORMA */
+        .btn-main {
+            background: linear-gradient(135deg, #00e6ff, #0055ff);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 230, 255, 0.3);
+        }
+
+        .btn-main:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(0, 230, 255, 0.6);
+        }
+
+        /* BOTÓN SECUNDARIO: COMPRAR EQUIPOS */
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* BOTÓN CHICO MOVIDO A 15% DE LA DERECHA */
+        .btn-video-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 15%; /* Movido un 10% más a la derecha */
+            z-index: 20;
+            background: rgba(15, 23, 42, 0.85);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 14px;
+            font-size: 13px;
+            font-weight: bold;
+            border-radius: 20px;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }
+
+        .btn-video-toggle:hover {
+            background: rgba(0, 230, 255, 0.2);
+            border-color: #00e6ff;
+            transform: scale(1.05);
+        }
+
+        /* VIDEO FLOTANTE CENTRADO EXACTAMENTE ARRIBA DEL BOTÓN */
+        .bg-video {
+            position: fixed;
+            bottom: 65px; /* Altura sobre el botón */
+            right: 15%; /* Alineación base */
+            width: 320px;
+            height: 180px;
+            object-fit: cover;
+            z-index: 20;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+            opacity: 0;
+            visibility: hidden;
+            /* Transform para centrar el video horizontalmente con el botón */
+            transform: translateX(calc(50% - 75px)); 
+            transition: opacity 0.4s ease, visibility 0.4s ease, transform 0.4s ease;
+        }
+
+        /* CLASE PARA MOSTRAR EL VIDEO */
+        .bg-video.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* ADAPTABILIDAD PARA PANTALLAS PEQUEÑAS (MÓVILES) */
+        @media (max-width: 480px) {
+            body {
+                justify-content: center;
+                padding-left: 0;
+            }
+            .left-container {
+                width: 90%;
+            }
+            .btn-video-toggle {
+                bottom: 15px;
+                right: 10%;
+            }
+            .bg-video {
+                bottom: 60px;
+                right: 50%;
+                transform: translateX(50%); /* Centrado general en celulares */
+                width: calc(100vw - 40px);
+                max-width: 320px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PANEL PRINCIPAL -->
+    <div class="left-container">
+        <!-- BOTÓN PRINCIPAL -->
+        <a href="http://www.gpsdd.net" class="btn btn-main" target="_blank" rel="noopener noreferrer">
+            INGRESO A PLATAFORMA
+        </a>
+
+        <!-- BOTÓN SECUNDARIO -->
+        <a href="https://www.xxxx.com" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">
+            COMPRAR EQUIPOS
+        </a>
+    </div>
+
+    <!-- REPRODUCTOR DE VIDEO FLOTANTE -->
+    <video id="bgVideo" class="bg-video" loop playsinline controls>
+        <source src="FONDO.MP4" type="video/mp4">
+        Tu navegador no soporta videos HTML5.
+    </video>
+
+    <!-- BOTÓN CHICO DE CONTROL -->
+    <button id="videoBtn" class="btn-video-toggle">
+        ▶ Reproducir Video
+    </button>
+
+    <script>
+        const video = document.getElementById('bgVideo');
+        const videoBtn = document.getElementById('videoBtn');
+
+        videoBtn.addEventListener('click', () => {
+            if (video.paused) {
+                video.play();
+                video.classList.add('active');
+                videoBtn.innerHTML = '✕ Cerrar / Pausar Video';
+            } else {
+                video.pause();
+                video.classList.remove('active');
+                videoBtn.innerHTML = '▶ Reproducir Video';
+            }
+        });
+    </script>
+
+</body>
+</html>
