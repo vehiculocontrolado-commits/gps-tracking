@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <!-- VIEWPORT FIJO MODO ESCRITORIO (Ancho rígido para celulares) -->
+    <meta name="viewport" content="width=1280, initial-scale=0.3, maximum-scale=3.0, user-scalable=yes">
+    <title>Rastreo GPS OBD2</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        /* FONDO BASE CON LA IMAGEN AJUSTADA */
+        body {
+            min-height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            background: #0f172a url('foto-obd.jpg') no-repeat center center fixed;
+            background-size: contain;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding-left: 60px;
+            position: relative;
+        }
+
+        /* CONTENEDOR FLOTANTE PRINCIPAL */
+        .left-container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            background: rgba(10, 15, 25, 0.70);
+            padding: 24px;
+            border-radius: 12px;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
+            min-width: 280px;
+        }
+
+        /* ESTILO GENERAL DE LOS BOTONES DEL PANEL */
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 12px 20px;
+            font-size: 15px;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 6px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .btn-icon {
+            width: 22px;
+            height: 22px;
+            flex-shrink: 0;
+        }
+
+        /* BOTÓN 1: INGRESO A PLATAFORMA */
+        .btn-main {
+            background: linear-gradient(135deg, #00e6ff, #0055ff);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 230, 255, 0.3);
+        }
+
+        .btn-main:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(0, 230, 255, 0.6);
+        }
+
+        /* BOTÓN 2: COMPRAR EQUIPOS POR WHATSAPP */
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(37, 211, 102, 0.25);
+            border-color: #25D366;
+            transform: translateY(-2px);
+        }
+
+        /* BOTÓN 3: COMPRAR EQUIPOS POR MERCADOLIBRE */
+        .btn-mercadolibre {
+            background: rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .btn-mercadolibre:hover {
+            background: rgba(255, 230, 0, 0.25);
+            border-color: #ffe600;
+            transform: translateY(-2px);
+        }
+
+        /* BOTÓN CHICO DE VIDEO */
+        .btn-video-toggle {
+            position: fixed;
+            bottom: 35px;
+            right: 17.5%;
+            z-index: 20;
+            background: rgba(15, 23, 42, 0.85);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 14px;
+            font-size: 13px;
+            font-weight: bold;
+            border-radius: 20px;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }
+
+        .btn-video-toggle:hover {
+            background: rgba(0, 230, 255, 0.2);
+            border-color: #00e6ff;
+            transform: scale(1.05);
+        }
+
+        /* VIDEO FLOTANTE CENTRADO SOBRE EL BOTÓN */
+        .bg-video {
+            position: fixed;
+            bottom: 80px;
+            right: 17.5%;
+            width: 320px;
+            height: 180px;
+            object-fit: cover;
+            z-index: 20;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateX(calc(50% - 75px)); 
+            transition: opacity 0.4s ease, visibility 0.4s ease, transform 0.4s ease;
+        }
+
+        /* CLASE PARA MOSTRAR EL VIDEO */
+        .bg-video.active {
+            opacity: 1;
+            visibility: visible;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PANEL PRINCIPAL -->
+    <div class="left-container">
+        <!-- BOTÓN 1: INGRESO A PLATAFORMA -->
+        <a href="http://www.gpsdd.net" class="btn btn-main" target="_blank" rel="noopener noreferrer">
+            INGRESO A PLATAFORMA
+        </a>
+
+        <!-- BOTÓN 2: COMPRAR EQUIPOS POR WHATSAPP (ENLACE ACTUALIZADO) -->
+        <a href="https://wa.me/+5491136843210" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">
+            COMPRAR EQUIPOS POR
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414-.074-.124-.272-.198-.57-.347z" fill="#25D366"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 2.159.683 4.158 1.848 5.795L2.5 21.5l3.827-1.314A9.955 9.955 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18a7.96 7.96 0 01-4.088-1.125l-.293-.174-2.271.78.794-2.22-.191-.303A7.963 7.963 0 014 12c0-4.418 3.582-8 8-8s8 3.582 8 8-3.582 8-8 8z" fill="#ffffff"/>
+            </svg>
+        </a>
+
+        <!-- BOTÓN 3: COMPRAR EQUIPOS POR MERCADOLIBRE -->
+        <a href="https://articulo.mercadolibre.com.ar/MLA-3636864436-gps-obd2-localizador-rastreador-chip-sim-cargadoacceso-a-webaplicacion-x-2-anos-a-partir-que-lo-activas-ideal-choferes-uber-cabify-otros-gsmgprs2ggeocercas-alarmas-velocidad-histrorial-_JM?searchVariation=197811049296&pdp_filters=price%3A150000-150000#polycard_client=search-desktop&searchVariation=197811049296&float_highlight=price_dropped&be_origin=backend&overlay_label=not_apply&search_layout=grid&position=2&type=item&tracking_id=a6c7e94c-ba97-45d0-a293-22b982403470&sid=search" class="btn btn-mercadolibre" target="_blank" rel="noopener noreferrer">
+            COMPRAR EQUIPOS POR
+            <svg class="btn-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="50" cy="50" r="48" fill="#FFE600"/>
+                <text x="50" y="62" font-family="Arial, sans-serif" font-size="42" font-weight="900" fill="#2D3277" text-anchor="middle">ML</text>
+            </svg>
+        </a>
+    </div>
+
+    <!-- REPRODUCTOR DE VIDEO FLOTANTE -->
+    <video id="bgVideo" class="bg-video" loop playsinline controls>
+        <source src="fondo.mp4" type="video/mp4">
+        Tu navegador no soporta videos HTML5.
+    </video>
+
+    <!-- BOTÓN CHICO DE CONTROL -->
+    <button id="videoBtn" class="btn-video-toggle">
+        ▶ Reproducir Video
+    </button>
+
+    <script>
+        const video = document.getElementById('bgVideo');
+        const videoBtn = document.getElementById('videoBtn');
+
+        videoBtn.addEventListener('click', () => {
+            if (video.paused) {
+                video.play();
+                video.classList.add('active');
+                videoBtn.innerHTML = '✕ Cerrar / Pausar Video';
+            } else {
+                video.pause();
+                video.classList.remove('active');
+                videoBtn.innerHTML = '▶ Reproducir Video';
+            }
+        });
+    </script>
+</body>
+</html>
